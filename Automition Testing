@@ -1,0 +1,82 @@
+package selenium;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.support.ui.Select;
+public class Demooo {
+ WebDriver driver;
+ @Before
+ public void setUp() throws Exception {
+ System.setProperty("webdriver.edge.driver", "
+C:\\Users\\mules\\OneDrive\\Desktop\\TESTING\\msedgedriver.exe");
+ driver = new EdgeDriver();
+ driver.manage().window().maximize();
+ driver.get("https://www.apsrtconline.in/oprs-web/guest/home.do?h=1");
+ }
+ @After
+ public void tearDown() throws Exception {
+ }
+ @Test
+ public void test() throws InterruptedException,IOException {
+ // FROM place
+ driver.findElement(By.id("fromPlaceName")).sendKeys("ONGOLE");
+ Thread.sleep(2000);
+ driver.findElement(By.id("fromPlaceName")).sendKeys(Keys.ARROW_DOWN);
+ driver.findElement(By.id("fromPlaceName")).sendKeys(Keys.ENTER);
+ driver.findElement(By.id("toPlaceName")).sendKeys("VANASTHALIPURAM");
+ Thread.sleep(2000); // Wait for suggestions
+ driver.findElement(By.id("toPlaceName")).sendKeys(Keys.ARROW_DOWN); //
+First go down
+ driver.findElement(By.id("toPlaceName")).sendKeys(Keys.ARROW_UP); //
+Then go up = topmost
+ driver.findElement(By.id("toPlaceName")).sendKeys(Keys.ENTER);
+ driver.findElement(By.id("txtJourneyDate")).click();
+ driver.findElement(By.linkText("22")).click();
+ driver.findElement(By.id("searchBtn")).click();
+ Thread.sleep(3000);
+ if (driver.findElements(By.id("SrvcSelectBtnForward0")).size() > 0) {
+ ((JavascriptExecutor) driver).executeScript("arguments[0].click();",
+driver.findElement(By.id("SrvcSelectBtnForward0")));
+ } else {
+ System.out.println("No Select Seat button found");
+ return;
+ }
+ Thread.sleep(3000);
+ Select dropdown = new Select(driver.findElement(By.id("ForwardBoardId")));
+ int size = dropdown.getOptions().size();
+ dropdown.selectByIndex(size - 2); // selects the last (bottom) option
+ Thread.sleep(3000);
+ Select dropping = new
+Select(driver.findElement(By.id("ForwardDroppingId")));
+ dropping.selectByIndex(1);
+ driver.findElement(By.xpath("//*[@id=\"fwLtBtn\"]")).click();
+ Thread.sleep(3000);
+ driver.findElement(By.xpath("//*[@id=\"Forward29\"]")).click();
+ driver.findElement(By.id("mobileNo")).sendKeys("9912164522");
+ Thread.sleep(3000);
+ driver.findElement(By.id("email")).sendKeys("sanjumule@gmail.com");
+ Select dropping1 = new
+Select(driver.findElement(By.xpath("//*[@id=\"genderCodeIdForward0\"]")));
+ dropping1.selectByIndex(2);
+
+driver.findElement(By.xpath("//*[@id=\"passengerNameForward0\"]")).sendKeys("SANJU
+");
+
+driver.findElement(By.xpath("//*[@id=\"passengerAgeForward0\"]")).sendKeys("20");
+ Select dropping2 = new
+Select(driver.findElement(By.id("concessionIdsForward0")));
+ dropping2.selectByIndex(1);
+ Thread.sleep(3000);
+ //*[@id="BookNowBtn"]
+ driver.findElement(By.xpath("//*[@id=\"BookNowBtn\"]")).click();
+ Thread.sleep(3000);
+File src2 = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+FileUtils.copyFile(src2, new
+File("C:\\Users\\Administrator\\Desktop\\screenshots\\image7.jpg"));
+}
+}
