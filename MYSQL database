@@ -1,0 +1,77 @@
+CREATE TABLE Users (
+         UserID INT PRIMARY KEY AUTO_INCREMENT,
+         Name VARCHAR(100),
+         Email VARCHAR(100) UNIQUE,
+         Phone VARCHAR(20)
+     );
+
+INSERT INTO Users (Name, Email, Phone) VALUES
+       ('Sanju reddy', 'sanju reddy@gmail.com', '9022111111'),
+       ('sandy', 'sandy@gmail.com', '9856784556'),
+       ('Dumbu', 'Dumbu@gmail.com', '9871665412');
+
+ CREATE TABLE Buses (
+         BusID INT PRIMARY KEY AUTO_INCREMENT,
+         BusNumber VARCHAR(20),
+         Source VARCHAR(100),
+         Destination VARCHAR(100),
+         DepartureTime DATETIME,
+         TotalSeats INT
+     );
+
+mysql> INSERT INTO Buses (BusNumber, Source, Destination, DepartureTime, TotalSeats) VALUES
+       ('AP01AA1234', 'Hyderabad', 'Vijayawada', '2025-08-12 08:00:00', 40),
+       ('AP02BB5678', 'Vijayawada', 'Guntur', '2025-08-12 11:30:00', 35),
+       ('AP03CC9999', 'Guntur', 'Tirupati', '2025-08-13 06:00:00', 45);
+
+ CREATE TABLE Bookings (
+         BookingID INT PRIMARY KEY AUTO_INCREMENT,
+         UserID INT,
+         BusID INT,
+         SeatNumber INT,
+         BookingDate DATETIME,
+         Status VARCHAR(50),
+         FOREIGN KEY (UserID) REFERENCES Users(UserID),
+         FOREIGN KEY (BusID) REFERENCES Buses(BusID)
+     );
+
+ INSERT INTO Bookings (UserID, BusID, SeatNumber, BookingDate, Status) VALUES
+       (1, 1, 10, '2025-08-10 09:15:00', 'Booked'),    
+       (2, 2, 20, '2025-08-11 10:20:00', 'Booked'),     
+       (3, 3, 5,  '2025-08-11 14:00:00', 'Cancelled');   
+
+CREATE TABLE Payments (
+         PaymentID INT PRIMARY KEY AUTO_INCREMENT,
+         BookingID INT,
+         Amount DECIMAL(8,2),
+         PaymentDate DATETIME,
+         PaymentMethod VARCHAR(100),
+         FOREIGN KEY (BookingID) REFERENCES Bookings(BookingID)
+     );
+
+mysql> INSERT INTO Payments (BookingID, Amount, PaymentDate, PaymentMethod) VALUES
+       (1, 500.00, '2025-08-10 09:20:00', 'Credit Card'),
+       (2, 350.00, '2025-08-11 10:30:00', 'UPI'),
+       (3, 400.00, '2025-08-11 14:05:00', 'Net Banking');
+
+ insert into Users values(4,'Bubu','Bubu@gmail.com',3698798787);
+
+ update Users set Name='Dudu',Email='Dudu@gmail.com' where UserID=2;
+
+ SELECT Buses.BusNumber, Bookings.SeatNumber, Bookings.BookingDate, Bookings.Status, Payments.PaymentMethod
+     FROM Bookings
+     JOIN Buses ON Bookings.BusID = Buses.BusID
+     Left JOIN Payments on Bookings.BookingID = Payments.BookingID
+     WHERE Bookings.UserID = 1;
+
+CREATE VIEW SimpleBookingView AS
+     SELECT
+         b.BookingID,
+         b.UserID,
+         bs.BusNumber,
+         b.SeatNumber,
+         b.BookingDate,
+         b.Status
+     FROM Bookings b
+     JOIN Buses bs ON b.BusID = bs.BusID;
+show create view SimpleBookingView;
